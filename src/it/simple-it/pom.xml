@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.richrelevance.it</groupId>
+  <artifactId>simple-it</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <description>A simple IT verifying the basic use case.</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>@project.groupId@</groupId>
+        <artifactId>@project.artifactId@</artifactId>
+        <version>@project.version@</version>
+        <configuration>
+          <baseImage>centos:latest</baseImage>
+          <maintainer>ops@company.com</maintainer>
+          <commandList>
+            <param>ADD target/app/scripts/startup-docker.sh /srv/app/startup.sh</param>
+            <param>RUN chmod 1777 /srv/app/startup.sh</param>
+            <param>ADD target/${project.build.finalName}-withdeps.jar /srv/app/lib/${project.build.finalName}-withdeps.jar</param>
+            <param>ADD config/config.properties /srv/app/config/config.properties</param>
+          </commandList>
+          <exposePorts>
+            <param>8000</param>
+            <param>8080</param>
+          </exposePorts>
+          <cmd>cd /srv/app &amp;&amp; su user -c ./startup.sh</cmd>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>buildDockerfile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
