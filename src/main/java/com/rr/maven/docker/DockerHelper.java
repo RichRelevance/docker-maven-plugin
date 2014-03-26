@@ -26,4 +26,6 @@ public interface DockerHelper {
   public String buildContainer() throws IOException, InterruptedException, MojoFailureException;
 
   public String pushContainer() throws IOException, InterruptedException, MojoFailureException;
+
+  public String removeContainer() throws IOException, InterruptedException, MojoFailureException;
 }

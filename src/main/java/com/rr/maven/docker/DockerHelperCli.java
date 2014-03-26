@@ -114,6 +114,27 @@ public class DockerHelperCli implements DockerHelper {
     return result;
   }
 
+  public String removeContainer() throws IOException, InterruptedException, MojoFailureException {
+    List<String> commandList = new ImmutableList.Builder<String>()
+      .add(dockerCommand)
+      .add("-H")
+      .add(dockerHost)
+      .add("rmi")
+      .add(dockerTag)
+      .build();
+
+    ProcessBuilder command = new ProcessBuilder(commandList);
+    command.redirectErrorStream(true);
+
+    Process process = command.start();
+
+    String result = getOutput(process.getInputStream());
+
+    process.waitFor();
+
+    return result;
+  }
+
   /**
    * helper method for getting the stdout from the commands
    *

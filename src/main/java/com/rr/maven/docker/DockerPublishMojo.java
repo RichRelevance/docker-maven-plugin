@@ -37,7 +37,7 @@ public class DockerPublishMojo extends AbstractDockerMojo {
   public void execute() throws MojoExecutionException, MojoFailureException {
     File baseDir = getBuildDir();
 
-    DockerHelper helper = new DockerHelperCli(dockerHost, baseDir, getDockerTagId());
+    DockerHelper helper = new DockerHelperCli(dockerHost, baseDir, getDockerPushId());
 
     try {
       String output = helper.pushContainer();
