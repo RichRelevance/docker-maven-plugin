@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ import org.apache.maven.project.MavenProject;
 /**
  * Generate the Dockerfile as specified in the pom using this plugin
  */
-@Mojo(name = "buildDockerfile", defaultPhase = LifecyclePhase.PACKAGE)
+@Mojo(name = "buildDockerfile", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
 public class DockerFileMojo extends AbstractDockerMojo {
 
   /**
@@ -52,13 +53,13 @@ public class DockerFileMojo extends AbstractDockerMojo {
    * List of build level commands to run on the container (ADD, RUN, etc) order will be preserved
    */
   @Parameter(required = true)
-  private Set<String> commandList;
+  private List<String> commandList;
 
   /**
    * List of ports to expose from the container via the EXPOSE command in the Dockerfile
    */
   @Parameter
-  private Set<String> exposePorts;
+  private List<String> exposePorts;
 
   /**
    * The CMD line at the end of the file to specific the start command/script in the Dockerfile
@@ -84,13 +85,19 @@ public class DockerFileMojo extends AbstractDockerMojo {
 
     try (PrintWriter writer = new PrintWriter(dockerFile, "UTF-8")) {
       writer.println("FROM " + baseImage);
-      writer.println("MAINTAINER " + maintainer);
+
+      if (maintainer != null) {
+        writer.println("MAINTAINER " + maintainer);
+      }
+
       for (String command : commandList) {
         writer.println(command);
       }
 
-      for (String port : exposePorts) {
-        writer.println("EXPOSE " + port);
+      if (exposePorts != null) {
+        for (String port : exposePorts) {
+          writer.println("EXPOSE " + port);
+        }
       }
 
       writer.println("CMD " + cmd);

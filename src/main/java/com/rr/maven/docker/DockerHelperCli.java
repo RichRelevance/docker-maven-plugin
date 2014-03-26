@@ -57,6 +57,7 @@ public class DockerHelperCli implements DockerHelper {
       .add("-H")
       .add(dockerHost)
       .add("build")
+      .add("--no-cache")
       .add("-rm")
       .add("-t")
       .add(dockerTag)

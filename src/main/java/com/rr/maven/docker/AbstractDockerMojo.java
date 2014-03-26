@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 abstract public class AbstractDockerMojo extends AbstractMojo {
 
@@ -18,7 +19,7 @@ abstract public class AbstractDockerMojo extends AbstractMojo {
    * This is the project finalName usually a shorten version for example if the full versions is com.rr.package:ArtifactId:1.1.0
    * this will be just ArtifactId
    */
-  @Parameter(defaultValue = "${project.build.finalName}", required = true)
+  @Parameter(defaultValue = "${project.artifactId}", required = true)
   private String artifactId;
 
   /**

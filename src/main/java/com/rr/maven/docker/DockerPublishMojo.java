@@ -25,7 +25,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * Class for pushing the docker container to the remote repo this happens by default in the maven deploy phase
  */
-@Mojo(name = "pushContainer", defaultPhase = LifecyclePhase.DEPLOY)
+@Mojo(name = "pushContainer", defaultPhase = LifecyclePhase.DEPLOY, threadSafe = true)
 public class DockerPublishMojo extends AbstractDockerMojo {
 
   /**
