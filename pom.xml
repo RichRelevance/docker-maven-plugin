@@ -6,7 +6,7 @@
 
   <groupId>com.rr.maven.docker</groupId>
   <artifactId>docker-maven-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>maven-plugin</packaging>
 
   <licenses>
@@ -27,6 +27,85 @@
   <prerequisites>
     <maven>${mavenVersion}</maven>
   </prerequisites>
+
+    <repositories>
+    <repository>
+      <id>rr-public</id>
+      <name>RichRelevance Public Repository</name>
+      <url>https://repo.richrelevance.com/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>rr-public-snapshots</id>
+      <name>RichRelevance Public Snapshots Repository</name>
+      <url>https://repo.richrelevance.com/content/groups/public.snapshots/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>ignore</checksumPolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>rr-public-plugin</id>
+      <name>RichRelevance Public Plugin Repository</name>
+      <url>https://repo.richrelevance.com/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>ignore</checksumPolicy>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>rr-public-plugin-snapshots</id>
+      <name>RichRelevance Public Snapshots Repository</name>
+      <url>https://repo.richrelevance.com/content/groups/public.snapshots/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>ignore</checksumPolicy>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
+      <distributionManagement>
+        <repository>
+          <id>richrelevance-inhouse</id>
+          <name>RichRelevance Repository</name>
+          <url>dav:https://repo.richrelevance.com/content/repositories/inhouse/</url>
+        </repository>
+        <snapshotRepository>
+          <id>richrelevance-inhouse-snapshots</id>
+          <name>RichRelevance Snapshot Repository</name>
+          <url>dav:https://repo.richrelevance.com/content/repositories/inhouse.snapshots/</url>
+        </snapshotRepository>
+        <site>
+          <id>richrelevance-site-snapshots</id>
+          <name>RichRelevance Maven Site</name>
+          <url>scp://site.richrelevance.com/home/build/webroot/site.richrelevance.com/publish/site/snapshots/</url>
+        </site>
+      </distributionManagement>
 
   <dependencies>
     <dependency>
@@ -53,6 +132,13 @@
   </dependencies>
 
   <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav-jackrabbit</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+    </extensions>    
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
