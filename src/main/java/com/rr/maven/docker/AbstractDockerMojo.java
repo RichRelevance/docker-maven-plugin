@@ -50,14 +50,6 @@ abstract public class AbstractDockerMojo extends AbstractMojo {
   }
 
   /**
-   * Different then above this one gives the image ID for the push since push command doesn't take a tag arg
-   * @return String
-   */
-  String getDockerPushId() {
-    return dockerRepo + "/" + artifactId.toLowerCase();
-  }
-
-  /**
    * Sorten method to return a File instead of the string that we get from buildDir
    * @return File
    */
