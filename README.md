@@ -10,7 +10,7 @@ an example pom would be
  <build>
     <plugins>
       <plugin>
-        <groupId>com.rr.maven</groupId>
+        <groupId>com.rr.maven.docker</groupId>
         <artifactId>docker-maven-plugin</artifactId>
         <version>1.0.1</version>
         <configuration>

@@ -43,14 +43,22 @@
   </licenses>
 
   <properties>
-    <mavenVersion>3.2.5</mavenVersion>
     <maven.compile.source>1.7</maven.compile.source>
     <maven.compile.target>1.7</maven.compile.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.version>3.2.5</maven.version>
+    <guava.version>18.0</guava.version>
+    <maven.plugin.annotations.version>3.4</maven.plugin.annotations.version>
+    <wagon.webdav.jackrabbit.verion>1.0-beta-7</wagon.webdav.jackrabbit.verion>
+    <versions.maven.plugin.version>2.1</versions.maven.plugin.version>
+    <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
+    <maven.plugin.plugin.version>3.4</maven.plugin.plugin.version>
+    <license.maven.plugin.version>2.11</license.maven.plugin.version>
+    <maven.invoker.plugin.version>1.10</maven.invoker.plugin.version>
   </properties>
 
   <prerequisites>
-    <maven>${mavenVersion}</maven>
+    <maven>${maven.version}</maven>
   </prerequisites>
 
 
@@ -58,22 +66,22 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>18.0</version>
+      <version>${guava.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>${mavenVersion}</version>
+      <version>${maven.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>${mavenVersion}</version>
+      <version>${maven.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.4</version>
+      <version>${maven.plugin.annotations.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -90,75 +98,106 @@
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-webdav-jackrabbit</artifactId>
-        <version>1.0-beta-7</version>
+        <version>${wagon.webdav.jackrabbit.verion}</version>
       </extension>
     </extensions>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>versions-maven-plugin</artifactId>
-        <version>2.1</version>
-        <configuration>
-          <generateBackupPoms>false</generateBackupPoms>
-          <allowSnapshots>true</allowSnapshots>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>${maven.compile.source}</source>
-          <target>${maven.compile.target}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <version>3.4</version>
-        <configuration>
-          <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-        </configuration>
-        <executions>
-          <execution>
-            <id>mojo-descriptor</id>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>${versions.maven.plugin.version}</version>
+          <configuration>
+            <generateBackupPoms>false</generateBackupPoms>
+            <allowSnapshots>true</allowSnapshots>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven.compiler.plugin.version}</version>
+          <configuration>
+            <source>${maven.compile.source}</source>
+            <target>${maven.compile.target}</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>${maven.plugin.plugin.version}</version>
+          <configuration>
+            <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+          </configuration>
+          <executions>
+            <execution>
+              <id>mojo-descriptor</id>
+              <goals>
+                <goal>descriptor</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>help-goal</id>
+              <goals>
+                <goal>helpmojo</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>${license.maven.plugin.version}</version>
+          <configuration>
+            <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
+            <properties>
+              <owner>RichRelevance</owner>
+            </properties>
+            <excludes>
+              <exclude>**/README.md</exclude>
+              <exclude>**/LICENSE</exclude>
+              <exclude>src/test/resources/**</exclude>
+              <exclude>src/main/resources/**</exclude>
+            </excludes>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>${maven.invoker.plugin.version}</version>
+          <configuration>
+            <debug>true</debug>
+            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+            <pomIncludes>
+              <pomInclude>*/pom.xml</pomInclude>
+            </pomIncludes>
+            <postBuildHookScript>verify</postBuildHookScript>
+            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+            <settingsFile>src/it/settings.xml</settingsFile>
             <goals>
-              <goal>descriptor</goal>
+              <goal>clean</goal>
+              <goal>test-compile</goal>
             </goals>
-          </execution>
-          <execution>
-            <id>help-goal</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.mycila</groupId>
-        <artifactId>license-maven-plugin</artifactId>
-        <version>2.11</version>
-        <configuration>
-          <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-          <properties>
-            <owner>RichRelevance</owner>
-          </properties>
-          <excludes>
-            <exclude>**/README.md</exclude>
-            <exclude>**/LICENSE</exclude>
-            <exclude>src/test/resources/**</exclude>
-            <exclude>src/main/resources/**</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+          </configuration>
+          <executions>
+            <execution>
+              <id>integration-test</id>
+              <goals>
+                <goal>install</goal>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
   <profiles>
     <profile>
@@ -168,31 +207,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>1.10</version>
-            <configuration>
-              <debug>true</debug>
-              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-              <pomIncludes>
-                <pomInclude>*/pom.xml</pomInclude>
-              </pomIncludes>
-              <postBuildHookScript>verify</postBuildHookScript>
-              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-              <settingsFile>src/it/settings.xml</settingsFile>
-              <goals>
-                <goal>clean</goal>
-                <goal>test-compile</goal>
-              </goals>
-            </configuration>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-                <goals>
-                  <goal>install</goal>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
